@@ -2083,6 +2083,9 @@ while (i < SizeOf(input_list))
     Select(0ue000, 0uf8ff); Clear() # 私用領域
     Select(0u30c4); Clear() # ツ
 
+# グリフ名を修正
+    Select(0u007e); SetGlyphName("asciitilde")
+
 # --------------------------------------------------
 
 # Proccess before saving
