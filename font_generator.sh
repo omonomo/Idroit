@@ -191,7 +191,7 @@ width_latin="682" # Latin フォントの em 値を1024に変換したときの�
 
 # 通常版用
 scale_width_latin="73" # Latin フォントの半角英数文字の横拡大率
-scale_height_latin="69" # Latin フォントの半角英数文字の縦拡大率
+scale_height_latin="70" # Latin フォントの半角英数文字の縦拡大率
 move_x_hankaku_latin="-85" # Latin フォント全体のX座標移動量
 scale_width_hankaku="100" # 半角英数文字の横拡大率
 scale_height_hankaku="100" # 半角英数文字の縦拡大率
