@@ -41,13 +41,13 @@ Idroit (いどろいと) はコーディングにもお使いいただける日�
 
 ## ダウンロード
 
-最新版 v1.0.1 (2025-03-02)
+最新版 v1.0.2 (2025-03-28)
 
 | リンク                                                                                                      | 説明                                   |
 | ----------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| [フォント (Idroit)](https://github.com/omonomo/Idroit/releases/download/v1.0.1/Idroit_v1.0.1.zip)           | 通常版。半角幅が全角の1/2。            |
-| [フォント (IdroitLoose)](https://github.com/omonomo/Idroit/releases/download/v1.0.1/IdroitLoose_v1.0.1.zip) | 文字間隔ゆるい版。半角幅が全角の9/16。 |
-| [ソースコード](https://github.com/omonomo/Idroit/archive/refs/tags/v1.0.1.zip)                              | 使用方法は下の方にあります。           |
+| [フォント (Idroit)](https://github.com/omonomo/Idroit/releases/download/v1.0.2/Idroit_v1.0.2.zip)           | 通常版。半角幅が全角の1/2。            |
+| [フォント (IdroitLoose)](https://github.com/omonomo/Idroit/releases/download/v1.0.2/IdroitLoose_v1.0.2.zip) | 文字間隔ゆるい版。半角幅が全角の9/16。 |
+| [ソースコード](https://github.com/omonomo/Idroit/archive/refs/tags/v1.0.2.zip)                              | 使用方法は下の方にあります。           |
 
 フォントやスクリプトの使用は自己責任にてお願いいたします。  
 各ファイルを使用することで生じた不具合・損害等について omonomo は責任を負いません。  
@@ -163,7 +163,7 @@ Loose 版は名称が 「IdroitLoose...」 になります。
 
 Idroit は以下の環境でビルドできることを確認しています。
 
-- OS: macOS Sequoia (version 15.3.1)
+- OS: macOS Sequoia (version 15.3.2)
 - Shell: GNU bash, version 5.2.37(1)-release (aarch64-apple-darwin23.4.0)
 - FontForge: 20230101
 - FontTools: 4.56.0
