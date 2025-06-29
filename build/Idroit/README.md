@@ -33,6 +33,8 @@ Copyright (c) 2025 omonomo ([https://omonomo.github.io/Idroit/](https://omonomo.
 **FX**: 文字間隔固定版  
 **HB**: 平凡版
 
+※ LG 付きはリガチャ対応
+
 ## 素材にさせていただいたフォントからの変更内容
 
 - em 値やラインギャップの変更
