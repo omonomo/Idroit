@@ -70,9 +70,9 @@ address_init() {
     address_calt_AR=$((address_calt_AL + 239)) # calt置換アドレス(右に移動した A)
     address_calt_figure=$((address_calt_AR + 239)) # calt置換アドレス(桁区切り付きの数字)
     address_calt_barD=$((address_calt_figure + 40)) # calt置換アドレス(下に移動した |)
-    address_calt_hyphenL=$((address_calt_barD + 7)) # calt置換アドレス(左に移動した *)
-    address_calt_hyphenR=$((address_calt_hyphenL + 28)) # calt置換アドレス(右に移動した *)
-    address_calt_end=$((address_calt_hyphenR + 28 - 1)) # calt置換の最終アドレス (右上に移動した :)
+    address_calt_hyphenL=$((address_calt_barD + 8)) # calt置換アドレス(左に移動した *)
+    address_calt_hyphenR=$((address_calt_hyphenL + 29)) # calt置換アドレス(右に移動した *)
+    address_calt_end=$((address_calt_hyphenR + 29 - 1)) # calt置換の最終アドレス (右上に移動した :)
     address_calt_barDLR="24" # calt置換アドレス(左右に移動した * から、左右に移動した | までの増分)
 
     address_ss_start=$((address_calt_end + 1)) # ss置換の先頭アドレス
@@ -82,7 +82,7 @@ address_init() {
     address_ss_zenhan=$((address_ss_vert + 109)) # ss置換の横書き全角半角アドレス(！)
     address_ss_braille=$((address_ss_zenhan + 172)) # ss置換の点字アドレス
     address_ss_visibility=$((address_ss_braille + 256)) # ss置換の識別性向上アドレス(/)
-    address_ss_mod=$((address_ss_visibility + 43)) # ss置換のDQVZアドレス
+    address_ss_mod=$((address_ss_visibility + 46)) # ss置換のDQVZアドレス
     address_ss_line=$((address_ss_mod + num_mod_glyphs * 6)) # ss置換の罫線アドレス
     address_ss_arrow=$((address_ss_line + 32)) # ss置換の矢印アドレス
     address_ss_zero=$((address_ss_arrow + 4)) # ss置換のスラッシュ無し0アドレス
@@ -93,7 +93,7 @@ address_init() {
     num_ss_glyphs=$((address_ss_end + 1 - address_ss_start)) # ss置換の総グリフ数
 
     lookupIndex_replace=$((lookupIndex_calt + num_calt_lookups)) # 単純置換のlookupナンバー
-    num_replace_lookups="10" # 単純置換のルックアップ数 (lookupの数を変えた場合はcalt_table_makerも変更すること)
+    num_replace_lookups="11" # 単純置換のルックアップ数 (lookupの数を変えた場合はcalt_table_makerも変更すること)
 
     lookupIndex_ss=$((lookupIndex_replace + num_replace_lookups)) # ssテーブルのlookupナンバー
     num_ss_lookups="11" # ssのルックアップ数 (lookupの数を変えた場合はtable_modificatorも変更すること)
@@ -192,6 +192,7 @@ move_y_zenkaku_math="-32" # ベースフォントの演算子上下移動量 (La
 move_y_calt_separate3="-510" # 3桁区切り表示のY座標
 move_y_calt_separate4="452" # 4桁区切り表示のY座標
 scale_calt_decimal="93" # 小数の拡大率
+move_y_calt_bar2="59" # | のY座標移動量 (括弧用)
 calt_init() {
     move_x_calt_colon="0" # : のX座標移動量
     move_y_calt_colon=$((move_y_math + 43)) # : のY座標移動量
@@ -3735,6 +3736,22 @@ while (i < \$argc)
     AddPosSub(lookupSub1, glyphName) # 移動前→後
     k += 1
 
+    lookupName = "単純置換 (上下 2)"
+    AddLookup(lookupName, "gsub_single", 0, [], lookups[numlookups - 1])
+    lookupSub1 = lookupName + "サブテーブル"
+    AddLookupSubtable(lookupName, lookupSub1)
+
+    Select(0u007c); Copy() # |
+    glyphName = GlyphInfo("Name")
+    Select(k); Paste()
+    Move(0, ${move_y_calt_bar2})
+    SetWidth(${width_hankaku})
+ #    AddPosSub(lookupSub0, glyphName) # 移動前←後
+    glyphName = GlyphInfo("Name")
+    Select(0u007c) # |
+    AddPosSub(lookupSub1, glyphName) # 移動前→後
+    k += 1
+
     lookupName = "単純置換 (左・記号)"
     AddLookup(lookupName, "gsub_single", 0, [], lookups[numlookups - 1])
     lookupSub1 = lookupName + "サブテーブル"
@@ -3746,7 +3763,8 @@ while (i < \$argc)
             0u007b, 0u007d,\
             0u0021, 0u0022, 0u0027, 0u002c,\
             0u002e, 0u003a, 0u003b, 0u003f,\
-            0u0060, 0u007c, 0u0000, 0u0001, 0u0002] # *+-=_solidus reverse solidus<>()[]{}!quote apostrophe,.:;?grave|、移動した|~:
+            0u0060, 0u007c, 0u0000, 0u0001, 0u0002,\
+            0u0003] # *+-=_solidus reverse solidus<>()[]{}!quote apostrophe,.:;?grave|、移動した|~:|
     j = 0
     while (j < SizeOf(symb))
         if (symb[j] == 0u0000) # 移動した |
@@ -3755,6 +3773,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 1)
         elseif (symb[j] == 0u0002) # 移動した :
             Select(${address_calt_barD} + 2)
+        elseif (symb[j] == 0u0003) # 移動した |
+            Select(${address_calt_barD} + 7)
         else
             Select(symb[j])
         endif
@@ -3771,6 +3791,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 1)
         elseif (symb[j] == 0u0002) # 移動した :
             Select(${address_calt_barD} + 2)
+        elseif (symb[j] == 0u0003) # 移動した |
+            Select(${address_calt_barD} + 7)
         else
             Select(symb[j])
         endif
@@ -3792,6 +3814,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 1)
         elseif (symb[j] == 0u0002) # 移動した :
             Select(${address_calt_barD} + 2)
+        elseif (symb[j] == 0u0003) # 移動した |
+            Select(${address_calt_barD} + 7)
         else
             Select(symb[j])
         endif
@@ -3808,6 +3832,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 1)
         elseif (symb[j] == 0u0002) # 移動した :
             Select(${address_calt_barD} + 2)
+        elseif (symb[j] == 0u0003) # 移動した |
+            Select(${address_calt_barD} + 7)
         else
             Select(symb[j])
         endif
@@ -4188,30 +4214,12 @@ while (i < \$argc)
     AddPosSub(lookupSub, glyphName)
     k += 1
 
-    Select(${address_store_visi_latin} + 1); Copy() # 下に移動した |
-    Select(k); Paste()
-    Move(0, ${move_y_calt_bar})
-    SetWidth(${width_hankaku})
-    glyphName = GlyphInfo("Name")
-    Select(${address_calt_barD})
-    AddPosSub(lookupSub, glyphName)
-    k += 1
-
     Select(${address_store_visi_latin} + 1); Copy() # 左に移動した |
     Select(k); Paste()
     Move(-${move_x_calt_symbol}, 0)
     SetWidth(${width_hankaku})
     glyphName = GlyphInfo("Name")
     Select(${address_calt_hyphenL} + ${address_calt_barDLR})
-    AddPosSub(lookupSub, glyphName)
-    k += 1
-
-    Select(${address_store_visi_latin} + 1); Copy() # 左下に移動した |
-    Select(k); Paste()
-    Move(-${move_x_calt_symbol}, ${move_y_calt_bar})
-    SetWidth(${width_hankaku})
-    glyphName = GlyphInfo("Name")
-    Select(${address_calt_hyphenL} + ${address_calt_barDLR} + 1)
     AddPosSub(lookupSub, glyphName)
     k += 1
 
@@ -4224,12 +4232,57 @@ while (i < \$argc)
     AddPosSub(lookupSub, glyphName)
     k += 1
 
+    Select(${address_store_visi_latin} + 1); Copy() # 下に移動した |
+    Select(k); Paste()
+    Move(0, ${move_y_calt_bar})
+    SetWidth(${width_hankaku})
+    glyphName = GlyphInfo("Name")
+    Select(${address_calt_barD})
+    AddPosSub(lookupSub, glyphName)
+    k += 1
+
+    Select(${address_store_visi_latin} + 1); Copy() # 左下に移動した |
+    Select(k); Paste()
+    Move(-${move_x_calt_symbol}, ${move_y_calt_bar})
+    SetWidth(${width_hankaku})
+    glyphName = GlyphInfo("Name")
+    Select(${address_calt_hyphenL} + ${address_calt_barDLR} + 1)
+    AddPosSub(lookupSub, glyphName)
+    k += 1
+
     Select(${address_store_visi_latin} + 1); Copy() # 右下に移動した |
     Select(k); Paste()
     Move(${move_x_calt_symbol}, ${move_y_calt_bar})
     SetWidth(${width_hankaku})
     glyphName = GlyphInfo("Name")
     Select(${address_calt_hyphenR} + ${address_calt_barDLR} + 1)
+    AddPosSub(lookupSub, glyphName)
+    k += 1
+
+    Select(${address_store_visi_latin} + 1); Copy() # 上に移動した | (括弧用)
+    Select(k); Paste()
+    Move(0, ${move_y_calt_bar2})
+    SetWidth(${width_hankaku})
+    glyphName = GlyphInfo("Name")
+    Select(${address_calt_barD} + 7)
+    AddPosSub(lookupSub, glyphName)
+    k += 1
+
+    Select(${address_store_visi_latin} + 1); Copy() # 左上に移動した | (括弧用)
+    Select(k); Paste()
+    Move(-${move_x_calt_symbol}, ${move_y_calt_bar2})
+    SetWidth(${width_hankaku})
+    glyphName = GlyphInfo("Name")
+    Select(${address_calt_hyphenL} + ${address_calt_barDLR} + 4)
+    AddPosSub(lookupSub, glyphName)
+    k += 1
+
+    Select(${address_store_visi_latin} + 1); Copy() # 右上に移動した | (括弧用)
+    Select(k); Paste()
+    Move(${move_x_calt_symbol}, ${move_y_calt_bar2})
+    SetWidth(${width_hankaku})
+    glyphName = GlyphInfo("Name")
+    Select(${address_calt_hyphenR} + ${address_calt_barDLR} + 4)
     AddPosSub(lookupSub, glyphName)
     k += 1
 
@@ -4861,6 +4914,13 @@ while (i < \$argc)
     Select(0u0052) # R
     AddPosSub(lookups[0][0],glyphName)
     AddPosSub(lookups[1][0],glyphName)
+
+# --------------------------------------------------
+
+# Proccess before saving
+    Print("Process before saving")
+    SelectWorthOutputting()
+    SetGlyphClass("automatic")
 
 # --------------------------------------------------
 
@@ -5734,18 +5794,8 @@ while (i < \$argc)
         endloop
 
         Select(0u007c); Copy() # |
-        Select(${address_calt_barD}); Paste() # 下に移動した |
-        Move(0, ${move_y_calt_bar})
-        SetWidth(${width_hankaku})
-
-        Select(0u007c); Copy() # |
         Select(${address_calt_hyphenL} + ${address_calt_barDLR}); Paste() # 左に移動した |
         Move(-${move_x_calt_symbol}, 0)
-        SetWidth(${width_hankaku})
-
-        Select(0u007c); Copy() # |
-        Select(${address_calt_hyphenL} + ${address_calt_barDLR} + 1); Paste() # 左下に移動した |
-        Move(-${move_x_calt_symbol}, ${move_y_calt_bar})
         SetWidth(${width_hankaku})
 
         Select(0u007c); Copy() # |
@@ -5754,8 +5804,33 @@ while (i < \$argc)
         SetWidth(${width_hankaku})
 
         Select(0u007c); Copy() # |
+        Select(${address_calt_barD}); Paste() # 下に移動した |
+        Move(0, ${move_y_calt_bar})
+        SetWidth(${width_hankaku})
+
+        Select(0u007c); Copy() # |
+        Select(${address_calt_hyphenL} + ${address_calt_barDLR} + 1); Paste() # 左下に移動した |
+        Move(-${move_x_calt_symbol}, ${move_y_calt_bar})
+        SetWidth(${width_hankaku})
+
+        Select(0u007c); Copy() # |
         Select(${address_calt_hyphenR} + ${address_calt_barDLR} + 1); Paste() # 右下に移動した |
         Move(${move_x_calt_symbol}, ${move_y_calt_bar})
+        SetWidth(${width_hankaku})
+
+        Select(0u007c); Copy() # |
+        Select(${address_calt_barD} + 7); Paste() # 上に移動した | (括弧用)
+        Move(0, ${move_y_calt_bar2})
+        SetWidth(${width_hankaku})
+
+        Select(0u007c); Copy() # |
+        Select(${address_calt_hyphenL} + ${address_calt_barDLR} + 4); Paste() # 左上に移動した | (括弧用)
+        Move(-${move_x_calt_symbol}, ${move_y_calt_bar2})
+        SetWidth(${width_hankaku})
+
+        Select(0u007c); Copy() # |
+        Select(${address_calt_hyphenR} + ${address_calt_barDLR} + 4); Paste() # 右上に移動した | (括弧用)
+        Move(${move_x_calt_symbol}, ${move_y_calt_bar2})
         SetWidth(${width_hankaku})
 
     else # calt非対応の場合、ダミーのフィーチャを削除

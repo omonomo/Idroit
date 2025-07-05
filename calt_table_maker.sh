@@ -39,7 +39,8 @@ lookupIndex_init() {
   lookupIndex_replace=$((lookupIndex_calt + num_calt_lookups)) # 単純置換のlookupナンバー
   lookupIndexRR=${lookupIndex_replace} # 変換先(右に移動させた記号のグリフ)
   lookupIndexLL=$((lookupIndexRR + 1)) # 変換先(左に移動させた記号のグリフ)
-  lookupIndexUD=$((lookupIndexLL + 1)) # 変換先(上下に移動させた記号のグリフ)
+  lookupIndexUD2=$((lookupIndexLL + 1)) # 変換先(上下に移動させた記号のグリフ 2)
+  lookupIndexUD=$((lookupIndexUD2 + 1)) # 変換先(上下に移動させた記号のグリフ)
   lookupIndex0=$((lookupIndexUD + 1)) # 変換先(小数のグリフ)
   lookupIndex2=$((lookupIndex0 + 1)) # 変換先(12桁マークを付けたグリフ)
   lookupIndex4=$((lookupIndex2 + 1)) # 変換先(4桁マークを付けたグリフ)
@@ -1009,11 +1010,11 @@ done
 
 # 上に移動した記号 ----------------------------------------
 
-word=(${colon} ${asterisk} ${plus} ${hyphen} ${equal}) # :*+-=
+word=(${colon} ${asterisk} ${plus} ${hyphen} ${equal} ${bar}) # :*+-=|
 
 for S in ${word[@]}; do
   echo "$i ${S}U glyph${i}" >> "${tmpdir}/${dict}.txt"
-  if [ "${S}" == "${colon}" ]; then # : は左右にも動くため追加
+  if [ "${S}" == "${colon}" ] || [ "${S}" == "${bar}" ] ; then # :| は左右にも動くため追加
     echo "$i ${S}UN glyph${i}" >> "${tmpdir}/${dict}.txt"
   fi
   i=$((i + 1))
@@ -1024,7 +1025,7 @@ done
 word=(${asterisk} ${plus} ${hyphen} ${equal} ${underscore} ${solidus} ${rSolidus} ${less} ${greater} \
 ${parenLeft} ${parenRight} ${bracketLeft} ${bracketRight} ${braceLeft} ${braceRight} ${exclam} \
 ${quotedbl} ${quote} ${comma} ${fullStop} ${colon} ${semicolon} ${question} ${grave} ${bar} \
-"${bar}D" "${tilde}D" "${colon}U") # 上下に動いた後、左右にも動く |~: を追加
+"${bar}D" "${tilde}D" "${colon}U" "${bar}U") # 上下に動いた後、左右にも動く |~:| を追加
 
 for S in ${word[@]}; do
   echo "$i ${S}L glyph${i}" >> "${tmpdir}/${dict}.txt"
@@ -1459,15 +1460,35 @@ for S in ${class[@]}; do
   done
 done
 
-# 記号 (下左右移動あり、ここで定義した変数は直接使用しないこと) ====================
+# 記号 (上下左右移動あり、ここで定義した変数は直接使用しないこと) ====================
 class=("")
 
 S="_bar_";   class+=("${S}"); eval ${S}=\("${bar}"\) # |
+
+# 記号単独 (上下左右移動あり、ここで定義した変数を使う) ====================
+
+S="_bar";   class+=("${S}"); eval ${S}=\(_bar_\) # |
+
+# 略号生成 (N: 通常、U: 上移動後、D: 下移動後、L: 左移動後、R: 右移動後)
+
+for S in ${class[@]}; do
+  eval member=(\${${S}[@]})
+  for T in ${member[@]}; do
+    eval ${S}N+=\("${T}N"\)
+    eval ${S}U+=\("${T}U"\)
+    eval ${S}D+=\("${T}D"\)
+    eval ${S}L+=\("${T}L"\)
+    eval ${S}R+=\("${T}R"\)
+  done
+done
+
+# 記号 (下左右移動あり、ここで定義した変数は直接使用しないこと) ====================
+class=("")
+
 S="_tilde_"; class+=("${S}"); eval ${S}=\("${tilde}"\) # ~
 
 # 記号単独 (下左右移動あり、ここで定義した変数を使う) ====================
 
-S="_bar";   class+=("${S}"); eval ${S}=\(_bar_\) # |
 S="_tilde"; class+=("${S}"); eval ${S}=\(_tilde_\) # ~
 
 # 略号生成 (N: 通常、D: 下移動後、L: 左移動後、R: 右移動後)
@@ -1570,6 +1591,7 @@ S="_grave_";        class+=("${S}"); eval ${S}=\("${grave}"\) # `
 S="_barD_";         class+=("${S}"); eval ${S}=\("${bar}D"\) # 下に移動した |
 S="_tildeD_";       class+=("${S}"); eval ${S}=\("${tilde}D"\) # 下に移動した ~
 S="_colonU_";       class+=("${S}"); eval ${S}=\("${colon}U"\) # 上に移動した :
+S="_barU_";         class+=("${S}"); eval ${S}=\("${bar}U"\) # 上に移動した |
 
 # 記号単独 (左右移動あり、ここで定義した変数を使う) ====================
 
@@ -1595,6 +1617,7 @@ S="_grave";        class+=("${S}"); eval ${S}=\(_grave_\) # `
 S="_barD";         class+=("${S}"); eval ${S}=\(_barD_\) # 下に移動した |
 S="_tildeD";       class+=("${S}"); eval ${S}=\(_tildeD_\) # 下に移動した ~
 S="_colonU";       class+=("${S}"); eval ${S}=\(_colonU_\) # 上に移動した :
+S="_barU";         class+=("${S}"); eval ${S}=\(_barU_\) # 上に移動した |
 
 # 記号グループ (左右移動あり、ここで定義した変数を使う) ====================
 
@@ -1602,7 +1625,7 @@ S="operatorH";   class+=("${S}"); eval ${S}=\(_asterisk_ _plus_ _hyphen_ _equal_
 S="bracketL";    class+=("${S}"); eval ${S}=\(_parenleft_ _bracketleft_ _braceleft_\) # 左括弧
 S="bracketR";    class+=("${S}"); eval ${S}=\(_parenright_ _bracketright_ _braceright_\) # 右括弧
 S="barDotComma"; class+=("${S}"); eval ${S}=\(_question_ _exclam_ _fullStop_ _colon_ \
-                                              _comma_ _semicolon_ _bar_ _barD_ _colonU_\) # ?!.:,;|
+                                              _comma_ _semicolon_ _bar_ _barD_ _colonU_\) # ?!.:,;||:
 
 # 略号生成 (N: 通常、L: 左移動後、R: 右移動後)
 
@@ -4449,6 +4472,19 @@ input=(${_colonN[@]})
 lookAhead=(${figureN[@]})
 chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexUD}"
 
+# ○左が左括弧の場合 | 上に移動
+backtrack=(${bracketLR[@]} \
+${bracketLN[@]})
+input=(${_barN[@]})
+lookAhead=("")
+chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexUD2}"
+
+# ○右が右括弧の場合 | 上に移動
+backtrack=("")
+input=(${_barN[@]})
+lookAhead=(${bracketRN[@]})
+chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexUD2}"
+
 # ~ に関する処理 ----------------------------------------
 
 # ○左が <>|~: の場合 ~ 下に移動
@@ -4466,32 +4502,36 @@ chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]
 
 # 括弧に関する処理の始め ----------------------------------------
 
-# ○左が左丸括弧、左波括弧の場合 左丸括弧、左波括弧 左に移動
+# ○左が左丸括弧、左波括弧、| の場合 左丸括弧、左波括弧 左に移動
 backtrack=(${_parenrightL[@]} ${_bracerightL[@]} \
-${_parenrightN[@]} ${_bracerightN[@]})
+${_parenrightN[@]} ${_bracerightN[@]} \
+${_barUN[@]})
 input=(${_parenrightN[@]} ${_bracerightN[@]})
 lookAhead=("")
 chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexLL}"
 
-# ○左が括弧の場合 左角括弧 左に移動
+# ○左が括弧、| の場合 左角括弧 左に移動
 backtrack=(${bracketRL[@]} \
-${bracketRN[@]})
+${bracketRN[@]} \
+${_barUN[@]})
 input=(${_bracketrightN[@]})
 lookAhead=("")
 chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexLL}"
 
 # ---
 
-# ○右が右丸括弧、右波括弧の場合 右丸括弧、右波括弧 右に移動
+# ○右が右丸括弧、右波括弧、| の場合 右丸括弧、右波括弧 右に移動
 backtrack=("")
 input=(${_parenleftN[@]} ${_braceleftN[@]})
-lookAhead=(${_parenleftN[@]} ${_braceleftN[@]})
+lookAhead=(${_parenleftN[@]} ${_braceleftN[@]} \
+${_barN[@]})
 chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexRR}"
 
-# ○右が左括弧の場合 左角括弧 右に移動
+# ○右が左括弧、| の場合 左角括弧 右に移動
 backtrack=("")
 input=(${_bracketleftN[@]})
-lookAhead=(${bracketLN[@]})
+lookAhead=(${bracketLN[@]} \
+${_barN[@]})
 chain_context 2 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexRR}"
 
 #CALT0
