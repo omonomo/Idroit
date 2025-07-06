@@ -70,9 +70,9 @@ address_init() {
     address_calt_AR=$((address_calt_AL + 239)) # calt置換アドレス(右に移動した A)
     address_calt_figure=$((address_calt_AR + 239)) # calt置換アドレス(桁区切り付きの数字)
     address_calt_barD=$((address_calt_figure + 40)) # calt置換アドレス(下に移動した |)
-    address_calt_hyphenL=$((address_calt_barD + 8)) # calt置換アドレス(左に移動した *)
-    address_calt_hyphenR=$((address_calt_hyphenL + 29)) # calt置換アドレス(右に移動した *)
-    address_calt_end=$((address_calt_hyphenR + 29 - 1)) # calt置換の最終アドレス (右上に移動した :)
+    address_calt_hyphenL=$((address_calt_barD + 9)) # calt置換アドレス(左に移動した *、数を変更した場合スロットの確保数を変更すること)
+    address_calt_hyphenR=$((address_calt_hyphenL + 30)) # calt置換アドレス(右に移動した *)
+    address_calt_end=$((address_calt_hyphenR + 30 - 1)) # calt置換の最終アドレス (右上に移動した :)
     address_calt_barDLR="24" # calt置換アドレス(左右に移動した * から、左右に移動した | までの増分)
 
     address_ss_start=$((address_calt_end + 1)) # ss置換の先頭アドレス
@@ -192,7 +192,6 @@ move_y_zenkaku_math="-32" # ベースフォントの演算子上下移動量 (La
 move_y_calt_separate3="-510" # 3桁区切り表示のY座標
 move_y_calt_separate4="452" # 4桁区切り表示のY座標
 scale_calt_decimal="93" # 小数の拡大率
-move_y_calt_bar2="59" # | のY座標移動量 (括弧用)
 calt_init() {
     move_x_calt_colon="0" # : のX座標移動量
     move_y_calt_colon=$((move_y_math + 43)) # : のY座標移動量
@@ -207,6 +206,12 @@ calt_init() {
     move_y_calt_math=$((- move_y_math + 100)) # +-= のY座標移動量
     move_y_calt_math=$(bc <<< "scale=0; ${move_y_calt_math} * ${scale_height_latin} / 100") # *+-= のY座標移動量
     move_y_calt_math=$(bc <<< "scale=0; ${move_y_calt_math} * ${scale_height_hankaku} / 100") # *+-= のY座標移動量
+    move_y_calt_colon2="145" # : のY座標移動量 (括弧用)
+    move_y_calt_colon2=$(bc <<< "scale=0; ${move_y_calt_colon2} * ${scale_height_latin} / 100") # : のY座標移動量
+    move_y_calt_colon2=$(bc <<< "scale=0; ${move_y_calt_colon2} * ${scale_height_hankaku} / 100") # : のY座標移動量
+    move_y_calt_bar2="60" # | のY座標移動量 (括弧用)
+    move_y_calt_bar2=$(bc <<< "scale=0; ${move_y_calt_bar2} * ${scale_height_latin} / 100") # | のY座標移動量
+    move_y_calt_bar2=$(bc <<< "scale=0; ${move_y_calt_bar2} * ${scale_height_hankaku} / 100") # | のY座標移動量
 }
 # 通常版・Loose版共通
 center_height_hankaku="373" # 半角文字Y座標中心
@@ -3692,6 +3697,11 @@ while (i < \$argc)
     AddPosSub(lookupSub1, glyphName) # 移動前→後
     k += 1
 
+    lookupName = "単純置換 (上下 2)"
+    AddLookup(lookupName, "gsub_single", 0, [], lookups[numlookups - 1])
+    lookupSub1 = lookupName + "サブテーブル"
+    AddLookupSubtable(lookupName, lookupSub1)
+
     Select(0u002a); Copy() # *
     glyphName = GlyphInfo("Name")
     Select(k); Paste()
@@ -3736,11 +3746,6 @@ while (i < \$argc)
     AddPosSub(lookupSub1, glyphName) # 移動前→後
     k += 1
 
-    lookupName = "単純置換 (上下 2)"
-    AddLookup(lookupName, "gsub_single", 0, [], lookups[numlookups - 1])
-    lookupSub1 = lookupName + "サブテーブル"
-    AddLookupSubtable(lookupName, lookupSub1)
-
     Select(0u007c); Copy() # |
     glyphName = GlyphInfo("Name")
     Select(k); Paste()
@@ -3749,6 +3754,17 @@ while (i < \$argc)
  #    AddPosSub(lookupSub0, glyphName) # 移動前←後
     glyphName = GlyphInfo("Name")
     Select(0u007c) # |
+    AddPosSub(lookupSub1, glyphName) # 移動前→後
+    k += 1
+
+    Select(0u003a); Copy() # :
+    glyphName = GlyphInfo("Name")
+    Select(k); Paste()
+    Move(${move_x_calt_colon}, ${move_y_calt_colon2})
+    SetWidth(${width_hankaku})
+ #    AddPosSub(lookupSub0, glyphName) # 移動前←後
+    glyphName = GlyphInfo("Name")
+    Select(0u003a) # :
     AddPosSub(lookupSub1, glyphName) # 移動前→後
     k += 1
 
@@ -3764,7 +3780,7 @@ while (i < \$argc)
             0u0021, 0u0022, 0u0027, 0u002c,\
             0u002e, 0u003a, 0u003b, 0u003f,\
             0u0060, 0u007c, 0u0000, 0u0001, 0u0002,\
-            0u0003] # *+-=_solidus reverse solidus<>()[]{}!quote apostrophe,.:;?grave|、移動した|~:|
+            0u0003, 0u0004] # *+-=_solidus reverse solidus<>()[]{}!quote apostrophe,.:;?grave|、移動した|~:|:
     j = 0
     while (j < SizeOf(symb))
         if (symb[j] == 0u0000) # 移動した |
@@ -3775,6 +3791,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 2)
         elseif (symb[j] == 0u0003) # 移動した |
             Select(${address_calt_barD} + 7)
+        elseif (symb[j] == 0u0004) # 移動した :
+            Select(${address_calt_barD} + 8)
         else
             Select(symb[j])
         endif
@@ -3793,6 +3811,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 2)
         elseif (symb[j] == 0u0003) # 移動した |
             Select(${address_calt_barD} + 7)
+        elseif (symb[j] == 0u0004) # 移動した :
+            Select(${address_calt_barD} + 8)
         else
             Select(symb[j])
         endif
@@ -3816,6 +3836,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 2)
         elseif (symb[j] == 0u0003) # 移動した |
             Select(${address_calt_barD} + 7)
+        elseif (symb[j] == 0u0004) # 移動した :
+            Select(${address_calt_barD} + 8)
         else
             Select(symb[j])
         endif
@@ -3834,6 +3856,8 @@ while (i < \$argc)
             Select(${address_calt_barD} + 2)
         elseif (symb[j] == 0u0003) # 移動した |
             Select(${address_calt_barD} + 7)
+        elseif (symb[j] == 0u0004) # 移動した :
+            Select(${address_calt_barD} + 8)
         else
             Select(symb[j])
         endif
