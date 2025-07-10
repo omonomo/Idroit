@@ -427,7 +427,7 @@ font_generator_help()
     echo "  -t                     Disable modified D,Q,V and Z"
     echo "  -O                     Disable slashed zero"
     echo "  -s                     Disable thousands separator"
-    echo "  -c                     Disable calt feature"
+    echo "  -c                     Disable calt feature (excluding ligatures)"
     echo "  -e                     Disable add Nerd fonts"
     echo "  -o                     Disable generate oblique style fonts"
     echo "  -j                     Reduce the number of emoji glyphs"
@@ -542,7 +542,7 @@ do
             separator_flag="false"
             ;;
         "c" )
-            echo "Option: Disable calt feature"
+            echo "Option: Disable calt feature (excluding ligatures)"
             if [ "${ss_flag}" = "true" ]; then
                 echo "Can't be disabled"
             else
