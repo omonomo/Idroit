@@ -1264,6 +1264,13 @@ while (i < SizeOf(input_list))
     Scale(110, 130,  ${width_latin} / 2, 1408)
     SetWidth(${width_latin})
 
+# ~ (位置調整)
+    if (input_list[i] == "${input_latin_bold}")
+        Select(0u007e) # ~
+        Move(0, -40)
+        SetWidth(${width_latin})
+    endif
+
 # ‵ (ベースフォントを置き換え)
  #    Select(0u2032); Copy() # ′
  #    Select(0u2035); Paste() # ‵
