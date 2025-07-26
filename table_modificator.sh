@@ -17,6 +17,7 @@ exec 2> >(tee -a $LOG_ERR)
 
 font_familyname="Idroit"
 
+ligaPatch="ligaPatch" # Monoidのリガチャバグの修正パッチ名
 lookupIndex_liga_end="96" # リガチャ用calt+単純置換の最終lookupナンバー
 lookupIndex_liga_calt_end="2" # リガチャ用caltの最終lookupナンバー
 lookupIndex_liga2calt="17" # リガチャ用calt+単純置換の最終からcaltの一つ前までのlookupナンバー加算値
@@ -114,6 +115,7 @@ remove_temp() {
   rm -f ${cmapList}.txt
   rm -f ${extList}.txt
   rm -f ${gsubList}.txt
+  rm -f ${ligaPatch}.txt
 }
 
 table_modificator_help()
@@ -378,8 +380,37 @@ if [ "${gsub_flag}" = "true" ]; then # caltListを作り直す場合は今ある
     fi
 
     # Idroit 専用 (リガチャのバグ修正)
-    sed -i.bak -e '/Backtrack index="." value="space"/d' "${P%%.ttf}.ttx"
-    sed -i.bak -e 's,Backtrack index="1" value="glyph14573",Backtrack index="0" value="glyph14573",' "${P%%.ttf}.ttx"
+    if [ "${liga_flag}" = "true" ]; then
+      cat > ${ligaPatch}.txt << _EOT_
+        <ChainContextSubst index="0" Format="1">
+          <Coverage>
+            <Glyph value="less"/>
+          </Coverage>
+          <ChainSubRuleSet index="0">
+            <ChainSubRule index="0">
+              <LookAhead index="0" value="equal"/>
+              <LookAhead index="1" value="equal"/>
+              <LookAhead index="2" value="equal"/>
+            </ChainSubRule>
+          </ChainSubRuleSet>
+        </ChainContextSubst>
+        <ChainContextSubst index="0" Format="1">
+          <Coverage>
+            <Glyph value="less"/>
+          </Coverage>
+          <ChainSubRuleSet index="0">
+            <ChainSubRule index="0">
+              <LookAhead index="0" value="less"/>
+              <LookAhead index="1" value="equal"/>
+            </ChainSubRule>
+          </ChainSubRuleSet>
+        </ChainContextSubst>
+_EOT_
+      sed -i.bak -e "/<!-- SubTableCount=136 -->/r ${ligaPatch}.txt" "${P%%.ttf}.ttx" # リガチャ用caltテーブルの先頭に挿入
+
+      sed -i.bak -e '/Backtrack index="." value="space"/d' "${P%%.ttf}.ttx"
+      sed -i.bak -e 's,Backtrack index="1" value="glyph14573",Backtrack index="0" value="glyph14573",' "${P%%.ttf}.ttx"
+    fi
 
     # GSUB (用字、言語全て共通に変更)
     if [ $(grep 'FeatureTag value="calt"' "${P%%.ttf}.ttx" | wc -l) -gt 1 ]; then # caltフィーチャが2つ以上(リガチャ以外のcaltが)ある場合
