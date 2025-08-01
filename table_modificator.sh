@@ -382,6 +382,57 @@ if [ "${gsub_flag}" = "true" ]; then # caltListを作り直す場合は今ある
     # Idroit 専用 (リガチャのバグ修正)
     if [ "${liga_flag}" = "true" ]; then
       cat > ${ligaPatch}.txt << _EOT_
+        <LookupType value="6"/>
+        <LookupFlag value="0"/>
+
+        <ChainContextSubst index="0" Format="1">
+          <Coverage>
+            <Glyph value="bar"/>
+          </Coverage>
+          <ChainSubRuleSet index="0">
+            <ChainSubRule index="0">
+              <Backtrack index="0" value="less"/>
+              <Backtrack index="1" value="bar"/>
+            </ChainSubRule>
+          </ChainSubRuleSet>
+        </ChainContextSubst>
+
+        <ChainContextSubst index="0" Format="1">
+          <Coverage>
+            <Glyph value="bar"/>
+          </Coverage>
+          <ChainSubRuleSet index="0">
+            <ChainSubRule index="0">
+              <LookAhead index="0" value="bar"/>
+              <LookAhead index="1" value="greater"/>
+            </ChainSubRule>
+          </ChainSubRuleSet>
+        </ChainContextSubst>
+
+        <ChainContextSubst index="0" Format="1">
+          <Coverage>
+            <Glyph value="bar"/>
+          </Coverage>
+          <ChainSubRuleSet index="0">
+            <ChainSubRule index="0">
+              <Backtrack index="0" value="less"/>
+              <LookAhead index="0" value="bar"/>
+            </ChainSubRule>
+          </ChainSubRuleSet>
+        </ChainContextSubst>
+
+        <ChainContextSubst index="0" Format="1">
+          <Coverage>
+            <Glyph value="bar"/>
+          </Coverage>
+          <ChainSubRuleSet index="0">
+            <ChainSubRule index="0">
+              <Backtrack index="0" value="bar"/>
+              <LookAhead index="0" value="greater"/>
+            </ChainSubRule>
+          </ChainSubRuleSet>
+        </ChainContextSubst>
+
         <ChainContextSubst index="0" Format="1">
           <Coverage>
             <Glyph value="less"/>
@@ -394,6 +445,7 @@ if [ "${gsub_flag}" = "true" ]; then # caltListを作り直す場合は今ある
             </ChainSubRule>
           </ChainSubRuleSet>
         </ChainContextSubst>
+
         <ChainContextSubst index="0" Format="1">
           <Coverage>
             <Glyph value="less"/>
@@ -406,7 +458,9 @@ if [ "${gsub_flag}" = "true" ]; then # caltListを作り直す場合は今ある
           </ChainSubRuleSet>
         </ChainContextSubst>
 _EOT_
-      sed -i.bak -e "/<!-- SubTableCount=136 -->/r ${ligaPatch}.txt" "${P%%.ttf}.ttx" # リガチャ用caltテーブルの先頭に挿入
+      sed -i.bak -e "/Lookup index=\"2\"/{n;d;}" "${P%%.ttf}.ttx"
+      sed -i.bak -e "/Lookup index=\"2\"/{n;d;}" "${P%%.ttf}.ttx"
+      sed -i.bak -e "/Lookup index=\"2\"/r ${ligaPatch}.txt" "${P%%.ttf}.ttx" # リガチャ用caltテーブルの先頭に挿入
 
       sed -i.bak -e '/Backtrack index="." value="space"/d' "${P%%.ttf}.ttx"
       sed -i.bak -e 's,Backtrack index="1" value="glyph14573",Backtrack index="0" value="glyph14573",' "${P%%.ttf}.ttx"
