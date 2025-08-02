@@ -41,15 +41,15 @@ Idroit (いどろいと) はコーディングにもお使いいただける日�
 
 ## ダウンロード
 
-最新版 v1.2.1 (2025-07-12)
+最新版 v1.2.2 (2025-08-02)
 
 | リンク                                                                                                          | 説明                                               |
 | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| [フォント (Idroit)](https://github.com/omonomo/Idroit/releases/download/v1.2.1/Idroit_v1.2.1.zip)               | 通常版。半角幅が全角の1/2。                        |
-| [フォント (IdroitLoose)](https://github.com/omonomo/Idroit/releases/download/v1.2.1/IdroitLoose_v1.2.1.zip)     | 文字間隔ゆるい版。半角幅が全角の9/16。             |
-| [フォント (IdroitLG)](https://github.com/omonomo/Idroit/releases/download/v1.2.1/IdroitLG_v1.2.1.zip)           | リガチャ対応版。半角幅が全角の1/2。                |
-| [フォント (IdroitLooseLG)](https://github.com/omonomo/Idroit/releases/download/v1.2.1/IdroitLooseLG_v1.2.1.zip) | リガチャ対応文字間隔ゆるい版。半角幅が全角の9/16。 |
-| [ソースコード](https://github.com/omonomo/Idroit/archive/refs/tags/v1.2.1.zip)                                  | 使用方法は[下の方](#基本的な使い方)にあります。    |
+| [フォント (Idroit)](https://github.com/omonomo/Idroit/releases/download/v1.2.2/Idroit_v1.2.2.zip)               | 通常版。半角幅が全角の1/2。                        |
+| [フォント (IdroitLoose)](https://github.com/omonomo/Idroit/releases/download/v1.2.2/IdroitLoose_v1.2.2.zip)     | 文字間隔ゆるい版。半角幅が全角の9/16。             |
+| [フォント (IdroitLG)](https://github.com/omonomo/Idroit/releases/download/v1.2.2/IdroitLG_v1.2.2.zip)           | リガチャ対応版。半角幅が全角の1/2。                |
+| [フォント (IdroitLooseLG)](https://github.com/omonomo/Idroit/releases/download/v1.2.2/IdroitLooseLG_v1.2.2.zip) | リガチャ対応文字間隔ゆるい版。半角幅が全角の9/16。 |
+| [ソースコード](https://github.com/omonomo/Idroit/archive/refs/tags/v1.2.2.zip)                                  | 使用方法は[下の方](#基本的な使い方)にあります。    |
 
 フォントやスクリプトの使用は自己責任にてお願いいたします。  
 各ファイルを使用することで生じた不具合・損害等について omonomo は責任を負いません。  
@@ -101,7 +101,7 @@ Idroit (いどろいと) はコーディングにもお使いいただける日�
 ### 機能的なものについて
 
 - Cyroit の特長を継承しています。
-- リガチャ対応版は Monoid の持つグリフにのみ対応しています。
+- コーディング用リガチャは Monoid の持つグリフにのみ対応しています。
 - IVS を利用した漢字の異体字表示に対応しています。
 - ccmp によるアイヌ語カナ表記に対応しています。
 - vert のみですが、縦書き表示に対応しています。
@@ -128,7 +128,7 @@ Loose 版は名称が 「IdroitLoose...」 になります。
 | 名称      | サンプル                                                 | 説明                                                                                                                    |
 | --------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Idroit    | <img alt="Normal" src="./images/Normal.png" width="268"> | 通常版。スタイルセット対応。<br> 内容については後述。                                                                   |
-| Idroit EH | <img alt="Normal" src="./images/EH.png" width="268">     | 絵文字減らした版。スタイルセット対応。別の絵文字フォントとの併用推奨。<br>(サンプルの㊙は Apple Color Emoji のものです) |
+| Idroit EH | <img alt="EH" src="./images/EH.png" width="268">         | 絵文字減らした版。スタイルセット対応。別の絵文字フォントとの併用推奨。<br>(サンプルの㊙は Apple Color Emoji のものです) |
 | Idroit BS | <img alt="BS" src="./images/BS.png" width="268">         | 基本版。<br> 全角スペースを可視化しています。                                                                           |
 | Idroit SP | <img alt="SP" src="./images/SP.png" width="268">         | スペシャルスペース版。<br> 半角スペース、ノーブレークスペースも可視化したバージョン。                                   |
 | Idroit DG | <img alt="DG" src="./images/DG.png" width="268">         | 桁区切り表示版。<br> たくさん並んだ数字とにらめっこする時間を短縮できます。                                             |
@@ -166,14 +166,14 @@ Loose 版は名称が 「IdroitLoose...」 になります。
 
 Idroit は以下の環境でビルドできることを確認しています。
 
-- macOS Sequoia 15.5
-- GNU bash, version 5.3.0(1)-release (aarch64-apple-darwin24.4.0)
+- macOS Sequoia 15.6
+- GNU bash, version 5.3.3(1)-release (aarch64-apple-darwin24.4.0)
 - FontForge 20230101
-- FontTools 4.58.5
+- FontTools 4.59.0
 
 または上記 macOS 上にて
 
-- Docker Desktop 4.43.1 (Engine 28.3.0, Compose v2.38.1-desktop.1)
+- Docker Desktop 4.43.2 (Engine 28.3.2, Compose v2.38.2-desktop.1)
   - Ubuntu 24.04.2 LTS
   - GNU bash, version 5.2.21(1)-release (aarch64-unknown-linux-gnu)
   - FontForge 20230101
