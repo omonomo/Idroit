@@ -830,12 +830,6 @@ while (i < SizeOf(input_list))
         Move(-43, 0)
     endif
 
-# 罫線、ブロックを少し移動
- #    Print("Move box drawing and block")
- #    Select(0u2500, 0u259f)
- #    Move(0, ${move_y_em_revise})
- #    SetWidth(${width_latin})
-
     Print("Edit numbers")
 # 0 (dot のグリフに置換)
     Select("zero.dot"); Copy();  Select("zero"); Paste(); SetWidth(${width_latin})
@@ -1225,6 +1219,11 @@ while (i < SizeOf(input_list))
     Select(0u00fd); PasteInto(); SetWidth(${width_latin})
     Select(0u00ff); PasteInto(); SetWidth(${width_latin})
     Select(0u0177); PasteInto(); SetWidth(${width_latin})
+
+# ю (右に移動)
+    Select(0u044e) # ю
+    Move(37, 0)
+    SetWidth(${width_latin})
 
 # Ǝ (ベースフォントを置き換え)
     Select(0u0045); Copy() # E
@@ -1999,12 +1998,19 @@ while (i < SizeOf(input_list))
         endif
     endloop
 
+# 罫線、ブロックを少し移動
+ #    Print("Move box drawing and block")
+ #    Select(0u2500, 0u259f)
+ #    Move(0, ${move_y_em_revise})
+ #    SetWidth(${width_latin})
+
 # --------------------------------------------------
 
 # Change the scale of hankaku glyphs
     if ("${draft_flag}" == "false")
         Print("Change the scale of hankaku glyphs")
-        Select(0u0020, 0u1fff) # 基本ラテン - ギリシア文字拡張 # 一部全角
+        Select(0u0021, 0u1fff) # 基本ラテン - ギリシャ文字拡張 ※一部全角
+        SelectFewer(0u00a0) # ノーブレークスペースを除外
         SelectMore(0u2010, 0u218f) # 一般句読点 - 数字の形
         SelectMore(0u2200, 0u22ff) # 数学記号 # 全角半角混合
         SelectMore(0u27c0, 0u27ef) # その他の数学記号 A
@@ -2093,7 +2099,8 @@ while (i < SizeOf(input_list))
     if (${scale_width_hankaku} != 100 || ${scale_height_hankaku} != 100)
         Print("Edit hankaku aspect ratio")
 
-        Select(0u0020, 0u1fff) # 基本ラテン - ギリシャ文字拡張
+        Select(0u0021, 0u1fff) # 基本ラテン - ギリシャ文字拡張
+        SelectFewer(0u00a0) # ノーブレークスペースを除外
         SelectMore(0u2010, 0u218f) # 一般句読点 - 数字の形
         SelectMore(0u2200, 0u22ff) # 数学記号
         SelectMore(0u27c0, 0u27ef) # その他の数学記号 A
