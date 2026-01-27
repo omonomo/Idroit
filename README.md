@@ -45,11 +45,11 @@ Idroit (いどろいと) はコーディングにもお使いいただける日�
 
 | リンク                                                                                                          | 説明                                               |
 | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| [フォント (Idroit)](https://github.com/omonomo/Idroit/releases/download/v1.3.2/Idroit_v1.3.2.zip)               | 通常版。半角幅が全角の1/2。                        |
-| [フォント (IdroitLoose)](https://github.com/omonomo/Idroit/releases/download/v1.3.2/IdroitLoose_v1.3.2.zip)     | 文字間隔ゆるい版。半角幅が全角の9/16。             |
-| [フォント (IdroitLG)](https://github.com/omonomo/Idroit/releases/download/v1.3.2/IdroitLG_v1.3.2.zip)           | リガチャ対応版。半角幅が全角の1/2。                |
-| [フォント (IdroitLooseLG)](https://github.com/omonomo/Idroit/releases/download/v1.3.2/IdroitLooseLG_v1.3.2.zip) | リガチャ対応文字間隔ゆるい版。半角幅が全角の9/16。 |
-| [ソースコード](https://github.com/omonomo/Idroit/archive/refs/tags/v1.3.2.zip)                                  | 使用方法は[下の方](#基本的な使い方)にあります。    |
+| [フォント (Idroit)](https://github.com/omonomo/Idroit/releases/download/v1.3.3/Idroit_v1.3.3.zip)               | 通常版。半角幅が全角の1/2。                        |
+| [フォント (IdroitLoose)](https://github.com/omonomo/Idroit/releases/download/v1.3.3/IdroitLoose_v1.3.3.zip)     | 文字間隔ゆるい版。半角幅が全角の9/16。             |
+| [フォント (IdroitLG)](https://github.com/omonomo/Idroit/releases/download/v1.3.3/IdroitLG_v1.3.3.zip)           | リガチャ対応版。半角幅が全角の1/2。                |
+| [フォント (IdroitLooseLG)](https://github.com/omonomo/Idroit/releases/download/v1.3.3/IdroitLooseLG_v1.3.3.zip) | リガチャ対応文字間隔ゆるい版。半角幅が全角の9/16。 |
+| [ソースコード](https://github.com/omonomo/Idroit/archive/refs/tags/v1.3.3.zip)                                  | 使用方法は[下の方](#基本的な使い方)にあります。    |
 
 フォントやスクリプトの使用は自己責任にてお願いいたします。  
 各ファイルを使用することで生じた不具合・損害等について omonomo は責任を負いません。  
