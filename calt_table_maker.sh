@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# GSUB calt table maker for Fonts that support ligatures
+# GSUB calt table maker for Idroit
 #
 # Copyright (c) 2023 omonomo
 #
@@ -1754,6 +1754,36 @@ for S in ${class[@]}; do
   eval lookAhead=(\${${S}N[@]})
   chain_context 1 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" ""
 done
+
+# Idroit のみの例外処理 ----------------------------------------
+
+# ○左が左寄り、右寄り、均等、中間の小文字で 右が frt の場合 右寄り、中間の小文字 右に移動しない
+backtrack=(${gravitySmallLN[@]} ${gravitySmallRN[@]} ${gravitySmallEN[@]} ${gravitySmallMN[@]})
+input=(${gravitySmallRN[@]} ${gravitySmallMN[@]})
+lookAhead=(${_fN[@]} ${_rN[@]} ${_tN[@]})
+chain_context 1 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" ""
+
+# ○左が ft で 右が左寄り、右寄り、均等、中間の小文字の場合 左寄り、右寄り、均等、中間の文字 左に移動しない
+backtrack=(${_fR[@]} ${_tR[@]} \
+${_fN[@]} ${_tN[@]})
+input=(${gravityLN[@]} ${gravityRN[@]} ${gravityEN[@]} ${gravityMN[@]})
+lookAhead=(${gravitySmallLN[@]} ${gravitySmallRN[@]} ${gravitySmallEN[@]} ${gravitySmallMN[@]})
+chain_context 1 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" ""
+
+# ○左が ft で 右が左寄り、右寄り、均等、中間の小文字の場合 幅広の文字 左に移動しない
+backtrack=(${_fL[@]} ${_tL[@]} \
+${_fN[@]} ${_tN[@]})
+input=(${gravityWN[@]})
+lookAhead=(${gravitySmallLN[@]} ${gravitySmallRN[@]} ${gravitySmallEN[@]} ${gravitySmallMN[@]})
+chain_context 1 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" ""
+
+# ○左が ijl で 右が r の場合 左寄り、右寄り、幅広、均等、中間の文字 左に移動
+backtrack=(${_jL[@]} \
+${_iR[@]} ${_lR[@]} \
+${_iN[@]} ${_jN[@]} ${_lN[@]})
+input=(${gravityLN[@]} ${gravityRN[@]} ${gravityWN[@]} ${gravityEN[@]} ${gravityMN[@]})
+lookAhead=(${_rN[@]})
+chain_context 1 index "${index}" "${backtrack[*]}" "${input[*]}" "${lookAhead[*]}" "${lookupIndexL}"
 
 # A に関する例外処理 1 ----------------------------------------
 
